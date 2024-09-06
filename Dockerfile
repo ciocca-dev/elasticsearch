@@ -5,9 +5,9 @@ FROM centos:7.9.2009
 RUN sed -i 's/mirrorlist/#mirrorlist/g' /etc/yum.repos.d/CentOS-* && \
     sed -i 's|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' /etc/yum.repos.d/CentOS-*
 
-# Install Java, sudo, which, and tini
+# Install Java and tini
 RUN yum update -y && \
-    yum install -y java-1.8.0-openjdk-headless sudo which && \
+    yum install -y java-1.8.0-openjdk-headless && \
     yum install -y https://github.com/krallin/tini/releases/download/v0.19.0/tini_0.19.0.rpm && \
     yum clean all && \
     rm -rf /var/cache/yum
@@ -33,9 +33,6 @@ COPY roles.yml /etc/elasticsearch/roles.yml
 
 # Copy and set permissions for the entrypoint script
 COPY --chmod=755 entrypoint-new.sh /usr/local/bin/entrypoint-new.sh
-
-# Configure sudo permissions
-RUN echo "elasticsearch ALL=(root) NOPASSWD: /bin/chown" > /etc/sudoers.d/elasticsearch
 
 # Set the correct ownership and permissions for Elasticsearch directories
 RUN mkdir -p /usr/share/elasticsearch/logs && \
