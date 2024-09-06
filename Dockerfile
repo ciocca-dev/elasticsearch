@@ -37,8 +37,10 @@ COPY --chmod=755 entrypoint-new.sh /usr/local/bin/entrypoint-new.sh
 # Configure sudo permissions
 RUN echo "elasticsearch ALL=(root) NOPASSWD: /bin/chown" > /etc/sudoers.d/elasticsearch
 
-# Set the correct ownership for Elasticsearch directories
-RUN chown -R elasticsearch:elasticsearch /etc/elasticsearch /var/log/elasticsearch /var/lib/elasticsearch
+# Set the correct ownership and permissions for Elasticsearch directories
+RUN mkdir -p /usr/share/elasticsearch/logs && \
+    chown -R elasticsearch:elasticsearch /usr/share/elasticsearch /etc/elasticsearch /var/log/elasticsearch /var/lib/elasticsearch && \
+    chmod -R 775 /usr/share/elasticsearch /etc/elasticsearch /var/log/elasticsearch /var/lib/elasticsearch
 
 # Add Elasticsearch bin directory to PATH for all users
 RUN echo "export PATH=$PATH:/usr/share/elasticsearch/bin" >> /etc/profile
