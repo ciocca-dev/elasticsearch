@@ -40,6 +40,9 @@ RUN echo "elasticsearch ALL=(root) NOPASSWD: /bin/chown" > /etc/sudoers.d/elasti
 # Set the correct ownership for Elasticsearch directories
 RUN chown -R elasticsearch:elasticsearch /etc/elasticsearch /var/log/elasticsearch /var/lib/elasticsearch
 
+# Add Elasticsearch bin directory to PATH for all users
+RUN echo "export PATH=$PATH:/usr/share/elasticsearch/bin" >> /etc/profile
+
 # Switch to the elasticsearch user
 USER elasticsearch
 
