@@ -1,4 +1,4 @@
-FROM elasticsearch:7.10.0
+FROM elasticsearch:7.10.1
 
 # Copy in our custom config file that disables the use of nmap
 COPY elasticsearch.yml /usr/share/elasticsearch/config/elasticsearch.yml
