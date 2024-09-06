@@ -1,10 +1,15 @@
-#!/bin/sh
+#!/bin/bash
+set -e
 
-# Exit the script as soon as any command fails
-set -euo pipefail
+# Files created by Elasticsearch should always be group writable too
+umask 0002
 
-# chown the mount to allow the elasticsearch user read and write access
-sudo chown -R 1000 /esdata
+if [[ "$(id -u)" == "0" ]]; then
+    echo "Elasticsearch cannot run as root. Please start as the elasticsearch user."
+    exit 1
+fi
 
-# exec the original process that the image would have started
-exec /bin/tini -- /usr/local/bin/docker-entrypoint.sh eswrapper
+# Ensure proper permissions on mounted volumes
+sudo chown -R elasticsearch:elasticsearch /var/lib/elasticsearch /var/log/elasticsearch
+
+exec elasticsearch

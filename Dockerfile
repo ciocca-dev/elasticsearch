@@ -5,9 +5,10 @@ FROM centos:7.9.2009
 RUN sed -i 's/mirrorlist/#mirrorlist/g' /etc/yum.repos.d/CentOS-* && \
     sed -i 's|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' /etc/yum.repos.d/CentOS-*
 
-# Install Java, as Elasticsearch requires it
+# Install Java, sudo, which, and tini
 RUN yum update -y && \
     yum install -y java-1.8.0-openjdk-headless sudo which && \
+    yum install -y https://github.com/krallin/tini/releases/download/v0.19.0/tini_0.19.0.rpm && \
     yum clean all && \
     rm -rf /var/cache/yum
 
@@ -42,8 +43,8 @@ RUN chown -R elasticsearch:elasticsearch /etc/elasticsearch /var/log/elasticsear
 # Switch to the elasticsearch user
 USER elasticsearch
 
-# Set the entrypoint
-ENTRYPOINT ["/usr/local/bin/entrypoint-new.sh"]
+# Set the entrypoint to use tini
+ENTRYPOINT ["/usr/bin/tini", "--", "/usr/local/bin/entrypoint-new.sh"]
 
 # Expose the default Elasticsearch ports
 EXPOSE 9200 9300
