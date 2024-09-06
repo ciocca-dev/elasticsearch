@@ -1,9 +1,13 @@
 # Start with a specific CentOS 7 image
 FROM centos:7.9.2009
 
+# Update the mirror list to use CentOS Vault
+RUN sed -i 's/mirrorlist/#mirrorlist/g' /etc/yum.repos.d/CentOS-* && \
+    sed -i 's|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' /etc/yum.repos.d/CentOS-*
+
 # Install Java, as Elasticsearch requires it
 RUN yum update -y && \
-    yum install -y java-1.8.0-openjdk-headless && \
+    yum install -y java-1.8.0-openjdk-headless sudo which && \
     yum clean all && \
     rm -rf /var/cache/yum
 
@@ -18,7 +22,7 @@ RUN rpm --import https://artifacts.elastic.co/GPG-KEY-elasticsearch && \
     echo "autorefresh=1" >> /etc/yum.repos.d/elasticsearch.repo && \
     echo "type=rpm-md" >> /etc/yum.repos.d/elasticsearch.repo
 
-RUN yum install -y elasticsearch-7.10.1 sudo && \
+RUN yum install -y elasticsearch-7.10.1 && \
     yum clean all && \
     rm -rf /var/cache/yum
 
