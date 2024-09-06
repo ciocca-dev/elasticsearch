@@ -18,6 +18,8 @@ echo "Current PATH: $PATH"
 # Print directory permissions for debugging
 echo "Permissions for /usr/share/elasticsearch/logs:"
 ls -la /usr/share/elasticsearch/logs
+echo "Permissions for /esdata:"
+ls -la /esdata
 
 # Use the full path to elasticsearch
 exec /usr/share/elasticsearch/bin/elasticsearch

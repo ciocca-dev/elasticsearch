@@ -34,10 +34,10 @@ COPY roles.yml /etc/elasticsearch/roles.yml
 # Copy and set permissions for the entrypoint script
 COPY --chmod=755 entrypoint-new.sh /usr/local/bin/entrypoint-new.sh
 
-# Set the correct ownership and permissions for Elasticsearch directories
-RUN mkdir -p /usr/share/elasticsearch/logs && \
-    chown -R elasticsearch:elasticsearch /usr/share/elasticsearch /etc/elasticsearch /var/log/elasticsearch /var/lib/elasticsearch && \
-    chmod -R 775 /usr/share/elasticsearch /etc/elasticsearch /var/log/elasticsearch /var/lib/elasticsearch
+# Create necessary directories and set permissions
+RUN mkdir -p /usr/share/elasticsearch/logs /esdata && \
+    chown -R elasticsearch:elasticsearch /usr/share/elasticsearch /etc/elasticsearch /var/log/elasticsearch /var/lib/elasticsearch /esdata && \
+    chmod -R 775 /usr/share/elasticsearch /etc/elasticsearch /var/log/elasticsearch /var/lib/elasticsearch /esdata
 
 # Add Elasticsearch bin directory to PATH for all users
 RUN echo "export PATH=$PATH:/usr/share/elasticsearch/bin" >> /etc/profile

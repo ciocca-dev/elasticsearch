@@ -2,7 +2,12 @@ bootstrap.memory_lock: "true"
 discovery.type: "single-node"
 node.name: "elasticsearch"
 path.data: "/esdata"
-xpack.security.enabled: "true"
+# Enable security features
+xpack.security.enabled: "false"
+
+# Disable the ability to automatically create indices
+action.auto_create_index: "false"
+
 xpack.security.enrollment.enabled: "false"
 node.store.allow_mmap: "false" # disable nmap
 network.host: 0.0.0.0
