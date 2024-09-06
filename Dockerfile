@@ -1,23 +1,25 @@
-FROM elasticsearch:7.10.1
+# Start with the official Elasticsearch image
+FROM docker.io/library/elasticsearch:7.10.1
 
-# Copy in our custom config file that disables the use of nmap
+# Copy configuration files
 COPY elasticsearch.yml /usr/share/elasticsearch/config/elasticsearch.yml
-
-# Copy in our custom role file that add an anonymous role
 COPY roles.yml /usr/share/elasticsearch/config/roles.yml
 
-# Copy in the new entrypoint and set the execution bit
+# Copy and set permissions for the entrypoint script
 COPY --chmod=755 entrypoint-new.sh /usr/local/bin/entrypoint-new.sh
 
-# Switch to the root user
-USER 0
+# Install sudo and configure permissions
+RUN yum update -y && \
+    yum install -y sudo && \
+    echo "elasticsearch ALL=(root) NOPASSWD: /bin/chown" > /etc/sudoers.d/elasticsearch && \
+    yum clean all && \
+    rm -rf /var/cache/yum
 
-# Install sudo and allow the elasticsearch user to run chown as root
-RUN apt-get update && apt-get install -y sudo && \
-    echo "elasticsearch ALL=(root) NOPASSWD: /bin/chown" > /etc/sudoers.d/elasticsearch
-
-# Switch back to the elasticsearch user as elasticsearch can only run as non-root
-USER 1000:0
-
-# Run our new entrypoint
+# Set the entrypoint
 ENTRYPOINT ["/usr/local/bin/entrypoint-new.sh"]
+
+# Expose the default Elasticsearch port
+EXPOSE 9200 9300
+
+# Set the default command
+CMD ["elasticsearch"]
